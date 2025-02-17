@@ -16,8 +16,7 @@ public interface ITokenService
 {
     string GenerateAccessToken(User user);
     Task<string> GenerateRefreshToken(Guid userId);
-    Task UpdateRefreshToken(Guid userId, string newRefreshToken);
-    Task<TokensResponse> RefreshAccessToken(string refreshToken);
+    Task<TokensResponse> RefreshAccessToken(string refreshToken, Guid userId);
 }
 
 internal class TokenService(IConfiguration configuration, SolarPlantDbContext dbContext, IUserRepository userRepository) : ITokenService
@@ -65,40 +64,49 @@ internal class TokenService(IConfiguration configuration, SolarPlantDbContext db
             .Replace("/", "_")
             .Replace("=", "");
 
-        await UpdateRefreshToken(userId, refreshToken);
+        await CreateRefreshToken(userId, refreshToken);
 
         return refreshToken;
     }
 
-    public async Task<TokensResponse> RefreshAccessToken(string refreshToken)
+    public async Task<TokensResponse> RefreshAccessToken(string refreshToken, Guid userId)
     {
-        var validRefreshToken = await dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == refreshToken) ??
-                                throw new TokenNotFoundException("Refresh token not found");
+        var validRefreshToken = await dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == refreshToken && rt.UserId == userId);
+        var user = await userRepository.GetUserByIdAsync(userId);
 
-        var user = await userRepository.GetUserByRefreshTokenAsync(refreshToken);
         if (user == null)
-            throw new UserNotFoundException("User with this refresh token not found");
+            throw new UserNotFoundException("User not found");
+
+        if (validRefreshToken == null)
+            throw new UnauthorizedException("Invalid refresh token");
 
         if (validRefreshToken.Expires < DateTime.Now)
             throw new UnauthorizedException("Refresh token expired");
 
         var accessToken = GenerateAccessToken(user);
+        var newRefreshToken = await GenerateRefreshToken(userId);
+
+        await CreateRefreshToken(userId, newRefreshToken, true);
 
         return new TokensResponse
         {
             AccessToken = accessToken,
-            RefreshToken = refreshToken
+            RefreshToken = newRefreshToken
         };
     }
 
-    public async Task UpdateRefreshToken(Guid userId, string newRefreshToken)
+    private async Task CreateRefreshToken(Guid userId, string newRefreshToken, bool updateExisting = false)
     {
         var existingRefreshToken = await dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.UserId == userId);
 
         if (existingRefreshToken != null)
         {
             existingRefreshToken.Token = newRefreshToken;
-            existingRefreshToken.Expires = DateTime.Now.AddDays(7);
+
+            if (!updateExisting)
+            {
+                existingRefreshToken.Expires = DateTime.Now.AddDays(7);
+            }
         }
         else
         {

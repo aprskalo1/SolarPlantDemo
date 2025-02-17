@@ -8,10 +8,7 @@ public interface IUserRepository
 {
     Task<User> CreateUserAsync(User user);
     Task<User?> GetUserByUsernameAsync(string username);
-    Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
-    
-    //
-    
+    Task<User?> GetUserByIdAsync(Guid userId);
     Task SaveChangesAsync();
 }
 
@@ -28,12 +25,9 @@ internal class UserRepository(SolarPlantDbContext dbContext) : IUserRepository
         return await dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
 
-    public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+    public async Task<User?> GetUserByIdAsync(Guid userId)
     {
-        return await dbContext.RefreshTokens
-            .Where(rt => rt.Token == refreshToken)
-            .Select(rt => rt.User)
-            .FirstOrDefaultAsync();
+        return await dbContext.Users.FindAsync(userId);
     }
 
     public async Task SaveChangesAsync()
