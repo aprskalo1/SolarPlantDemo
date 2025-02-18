@@ -52,7 +52,11 @@ Go to the root of the project and  execute the following command:
 ```bash
 dotnet ef database update
 ```
-Now you can start the application and check the following enpoints
+Now you can start the application and check created enpoints.
+
+## Note
+
+Upon start if database is empty application will seed the database with 3 solar plants and each of them will have mock production data recorded in specific 15 minute interval.
 
 ## Technologies Used
 - **C#**: Language.
