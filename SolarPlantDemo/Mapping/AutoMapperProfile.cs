@@ -11,5 +11,10 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<User, UserRegisterRequestDto>().ReverseMap();
         CreateMap<User, UserResponseDto>().ReverseMap();
+
+        CreateMap<PowerPlant, PowerPlantRequestDto>().ReverseMap();
+        CreateMap<PowerPlant, PowerPlantResponseDto>().ReverseMap();
+
+        CreateMap<PlantRecord, RecordResponseDto>().ReverseMap();
     }
 }

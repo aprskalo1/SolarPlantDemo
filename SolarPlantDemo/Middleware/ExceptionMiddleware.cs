@@ -26,11 +26,12 @@ public class ExceptionMiddleware(RequestDelegate next)
     {
         var statusCode = exception switch
         {
-            TokenNotFoundException => HttpStatusCode.NotFound,
             UnauthorizedException => HttpStatusCode.Unauthorized,
             UserCreationException => HttpStatusCode.BadRequest,
             UserNotFoundException => HttpStatusCode.NotFound,
             UserLoginException => HttpStatusCode.BadRequest,
+            PlantNotFoundException => HttpStatusCode.NotFound,
+            RecordGranularityException => HttpStatusCode.BadRequest,
             _ => HttpStatusCode.BadRequest
         };
 

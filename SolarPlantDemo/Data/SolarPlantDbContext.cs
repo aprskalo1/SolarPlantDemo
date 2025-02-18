@@ -7,4 +7,8 @@ public class SolarPlantDbContext(DbContextOptions<SolarPlantDbContext> options) 
 {
     public DbSet<User> Users { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+    public DbSet<PowerPlant> PowerPlants { get; set; }
+
+    public DbSet<PlantRecord> PlantRecords { get; set; }
 }
