@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SolarPlantDemo.Data;
+using SolarPlantDemo.Integrations;
 using SolarPlantDemo.Mapping;
 using SolarPlantDemo.Middleware;
 using SolarPlantDemo.Repositories;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<IPlantService, PlantService>();
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 builder.Services.AddScoped<IRecordService, RecordService>();
 builder.Services.AddScoped<IRecordRepository, RecordRepository>();
+builder.Services.AddHttpClient<IWeatherForecastService, WeatherForecastService>();
 
 builder.Services.AddAuthentication(options =>
     {

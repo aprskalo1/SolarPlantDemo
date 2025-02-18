@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices.JavaScript;
 
 namespace SolarPlantDemo.Models.Entities;
 
