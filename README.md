@@ -58,7 +58,7 @@ Now you can start the application and check created enpoints.
 
 Upon start if database is empty application will seed the database with 3 solar plants and each of them will have mock production data recorded in specific 15 minute interval.
 
-##Logging
+## Logging
 Logs will be stored in C:\Logs by default, log directory can be changed in appsettings.json configuration file.
 
 ## Technologies Used
