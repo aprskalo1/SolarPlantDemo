@@ -100,6 +100,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseRequestLogging();
 
 app.MapControllers();
 app.UseHttpsRedirection();
