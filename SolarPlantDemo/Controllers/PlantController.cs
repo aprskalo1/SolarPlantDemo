@@ -25,14 +25,14 @@ public class PlantController(IPlantService plantService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreatePlant([FromBody] PowerPlantRequestDto plantRequest)
+    public async Task<IActionResult> CreatePlant(PowerPlantRequestDto plantRequest)
     {
         var createdPlant = await plantService.CreatePlantAsync(plantRequest);
         return CreatedAtAction(nameof(GetPlant), new { id = createdPlant.Id }, createdPlant);
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdatePlant(Guid id, [FromBody] PowerPlantRequestDto plantRequest)
+    public async Task<IActionResult> UpdatePlant(Guid id, PowerPlantRequestDto plantRequest)
     {
         var updatedPlant = await plantService.UpdatePlantAsync(id, plantRequest);
         return Ok(updatedPlant);
